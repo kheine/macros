@@ -14,11 +14,12 @@ void PlotQCDPredictionsData()
    // legend entries + ratio title
    TString Hist1Legend = "R+S Prediction from Data";
    TString Hist2Legend = "Selected Data";
+   TString StatUnc = "Stat. unc. Data";
    TString RatioTitle  = "(Pred-Data)/Data";
 
    // lumi text
-   TString HistLabel = "CMS Preliminary, L = 19.47 fb^{  -1}, #sqrt{s} = 8 TeV";
-   //TString HistLabel = "Work in progress, L = 19.47 fb^{  -1}, #sqrt{s} = 8 TeV";
+   TString HistLabel = "CMS Preliminary, L = 19.5 fb^{  -1}, #sqrt{s} = 8 TeV";
+   //TString HistLabel = "Work in progress, L = 19.5 fb^{  -1}, #sqrt{s} = 8 TeV";
  
    // path to sample directory
    TString path = "/afs/naf.desy.de/user/k/kriheine/scratch/CMSSW_5_3_5/src/RA2Classic/QCDBkgRS/test/QCDPrediction/output_GetPrediction_WithUncertainties/" + postfix;
@@ -40,7 +41,7 @@ void PlotQCDPredictionsData()
                                              "NJets_presel_HThigh_sel_nominal", "N_{Jets}", "Events",
                                              "N_{Jets} #geq 3, #Delta#phi cut inverted, H_{T} #geq 1000 GeV", 
                                              HistLabel, 
-                                             Hist1Legend, Hist2Legend,
+                                             Hist1Legend, Hist2Legend, StatUnc,
                                              RatioTitle);
    c->Print( psfile  + "[");
    c->Print( psfile );
@@ -53,7 +54,7 @@ void PlotQCDPredictionsData()
                                                  "Events", 
                                                  "N_{Jets} #geq 3, #Delta#phi cut inverted, H_{T} #geq 1000 GeV", 
                                                  HistLabel, 
-                                                 Hist1Legend, Hist2Legend,
+                                                 Hist1Legend, Hist2Legend, StatUnc,
                                                  RatioTitle);
    c->Print( psfile );
    c->Print( "QCDPredictionPlots/HT_presel_HThigh_" + postfix + ".png" );
@@ -66,7 +67,7 @@ void PlotQCDPredictionsData()
                                                  "Events",
                                                  "N_{Jets} #geq 3, #Delta#phi cut inverted, H_{T} #geq 1000 GeV", 
                                                  HistLabel, 
-                                                 Hist1Legend, Hist2Legend,
+                                                 Hist1Legend, Hist2Legend, StatUnc,
                                                  RatioTitle); 
    c->Print( psfile );
    c->Print( "QCDPredictionPlots/MHT_presel_HThigh_" + postfix + ".png" );
@@ -79,7 +80,7 @@ void PlotQCDPredictionsData()
                                                  "Events", 
                                                  "N_{Jets} #geq 3, #Delta#phi cut inverted, H_{T} #geq 1000 GeV", 
                                                  HistLabel, 
-                                                 Hist1Legend, Hist2Legend,
+                                                 Hist1Legend, Hist2Legend, StatUnc,
                                                  RatioTitle); 
    c->Print( psfile );
    c->Print( "QCDPredictionPlots/Jet1Pt_presel_HThigh_" + postfix + ".png" );
@@ -90,7 +91,7 @@ void PlotQCDPredictionsData()
                                                  "Events", 
                                                  "N_{Jets} #geq 3, #Delta#phi cut inverted, H_{T} #geq 1000 GeV", 
                                                  HistLabel, 
-                                                 Hist1Legend, Hist2Legend,
+                                                 Hist1Legend, Hist2Legend, StatUnc,
                                                  RatioTitle); 
    c->Print( psfile );
    c->Print( "QCDPredictionPlots/Jet1Eta_presel_HThigh_" + postfix + ".png" );

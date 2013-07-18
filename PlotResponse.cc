@@ -4,11 +4,11 @@ using namespace std;
 
 void PlotResponse(){
 
-   // gROOT->ProcessLine(".L PlottingUtils.C+");
+   gROOT->ProcessLine(".L PlottingUtils.C+");
    
-   // PlottingUtils::SetPlotStyle();
+   PlottingUtils::SetPlotStyle();
 
-   gROOT->SetStyle("Plain");
+   /* gROOT->SetStyle("Plain");
    //gStyle->SetPalette(51, 0);
 
    //  gStyle->SetHatchesLineWidth(1.2);
@@ -75,7 +75,7 @@ void PlotResponse(){
    // For the legend
    gStyle->SetLegendBorderSize(0);
 
-   gROOT->ForceStyle();
+   gROOT->ForceStyle();*/
 
    vector<double> PtBinEdges;
    vector<double> EtaBinEdges;
@@ -180,7 +180,7 @@ void PlotResponse(){
          leg->SetFillStyle(0);
          leg->SetLineStyle(1);
          leg->SetTextFont(42);
-         leg->SetTextSize(0.045);
+         leg->SetTextSize(0.04);
          //leg->AddEntry(Res_1, "pythia", "l");
          //leg->AddEntry(Res_2, "madgraph", "l");
          leg->AddEntry(Res_1, "All jets", "l");
@@ -191,17 +191,17 @@ void PlotResponse(){
          pt->SetBorderSize(0);
          pt->SetFillStyle(0);
          pt->SetTextAlign(12);
-         pt->SetTextSize(0.03);
+         pt->SetTextSize(0.033);
          sprintf(dummy, "%i GeV < p_{T}^{gen} < %i GeV, %3.1f < |#eta| < %3.1f", (int) PtBinEdges.at(iPt - 1),
                  (int) PtBinEdges.at(iPt), EtaBinEdges.at(iEta - 1), EtaBinEdges.at(iEta));
          pt->AddText(dummy);
-         pt->AddText("CMS Simulation, L = 19.47 fb^{  -1}, #sqrt{s} = 8 TeV");
+         pt->AddText("CMS Simulation, L = 19.5 fb^{  -1}, #sqrt{s} = 8 TeV");
          pt->Draw();
 
          c->Print("ResponseTemplate_b_all_pythia.ps");
 
          if (iPt == 11 && iEta == 1)
-            c->Print("ResponseTemplate_b_all_pythia.png");
+            c->Print("ResponseTemplate_b_all_pythia.pdf");
 
          //         if (iPt == 1 && iEta == 1) {
          //            c->Print("Response.ps(");

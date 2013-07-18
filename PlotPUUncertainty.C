@@ -115,18 +115,17 @@ TCanvas* GetPlot(TH1F *data_hist, TH1F* mc_hist, TString NJets)
    leg->SetFillStyle(0);
    leg->SetLineStyle(1);
    leg->SetTextFont(42);
-   leg->SetTextSize(0.04);
+   leg->SetTextSize(0.035);
 
    leg->Draw("same");
 
-   TPaveText* pt2 = new TPaveText(0.11, 0.94, 0.95, 0.86, "NDC");
+   TPaveText* pt2 = new TPaveText(0.11, 0.855, 0.95, 0.935, "NDC");
    pt2->SetBorderSize(0);
    pt2->SetFillStyle(0);
    pt2->SetTextAlign(12);
-   // pt2->SetTextFont(42);
    pt2->SetTextSize(0.03);
    pt2->AddText(NJets);
-   pt2->AddText("CMS Preliminary, L = 19.47 fb^{  -1}, #sqrt{s} = 8 TeV");
+   pt2->AddText("CMS Preliminary, L = 19.5 fb^{  -1}, #sqrt{s} = 8 TeV");
    pt2->Draw();
 
    return c;

@@ -13,14 +13,14 @@ void PlotJERWithPLIConsidered()
 
    // define which asymm width definition was used
    //TString AsymmWidth = "GaussFitWidth";
-   //TString AsymmWidth = "TruncatedRMS";
-   TString AsymmWidth = "StandardDeviation";
+   TString AsymmWidth = "TruncatedRMS";
+   //TString AsymmWidth = "StandardDeviation";
  
    // prompt reco
    // TFile* Asymmetry_file = new TFile("/afs/naf.desy.de/user/k/kriheine/scratch/Kalibri/L2andJERScripts/2013_03_21_plots_v1_" + AsymmWidth + "_ResidualCorr_Z2pythia_PF/OutputResolutions2012.root", "READ");
 
    // rereco
-   //TFile* Asymmetry_file = new TFile("/afs/naf.desy.de/user/k/kriheine/scratch/Kalibri/L2andJERScripts/2013_04_25_plots_v1_" + AsymmWidth + "_ResidualCorr_Z2pythia_PF/OutputResolutions2012.root", "READ");
+   TFile* Asymmetry_file = new TFile("/afs/naf.desy.de/user/k/kriheine/scratch/Kalibri/L2andJERScripts/2013_04_25_plots_v1_" + AsymmWidth + "_ResidualCorr_Z2pythia_PF/OutputResolutions2012.root", "READ");
 
    // rereco with MBXS 73500
    //TFile* Asymmetry_file = new TFile("/afs/naf.desy.de/user/k/kriheine/scratch/Kalibri/L2andJERScripts/2013_05_03_plots_v1_" + AsymmWidth + "_ResidualCorr_Z2pythia_PF_MBXS73500/OutputResolutions2012.root", "READ");
@@ -28,7 +28,7 @@ void PlotJERWithPLIConsidered()
    // prompt reco
    //TFile* GenAsymmetry_file = new TFile("/afs/naf.desy.de/user/k/kriheine/scratch/Kalibri/L2andJERScripts/2013_03_21_plots_v1_StandardDeviation_GenAsymmetry_Z2pythia_PF/OutputResolutions2012.root", "READ");
    // rereco
-   //TFile* GenAsymmetry_file = new TFile("/afs/naf.desy.de/user/k/kriheine/scratch/Kalibri/L2andJERScripts/2013_04_25_plots_v1_StandardDeviation_GenAsymmetry_Z2pythia_PF/OutputResolutions2012.root", "READ");
+   TFile* GenAsymmetry_file = new TFile("/afs/naf.desy.de/user/k/kriheine/scratch/Kalibri/L2andJERScripts/2013_04_25_plots_v1_" + AsymmWidth + "_GenAsymmetry_Z2pythia_PF/OutputResolutions2012.root", "READ");
 
    // rereco with MBXS 73500
    //TFile* GenAsymmetry_file = new TFile("/afs/naf.desy.de/user/k/kriheine/scratch/Kalibri/L2andJERScripts/2013_05_03_plots_v1_StandardDeviation_GenAsymmetry_Z2pythia_PF_MBXS73500/OutputResolutions2012.root", "READ");
@@ -36,9 +36,9 @@ void PlotJERWithPLIConsidered()
    // ------------------------------------------------------------------ //
 
    // closure test files
-   TFile* Asymmetry_file = new TFile("2013_04_09_plots_v1_" + AsymmWidth + "_ResidualCorr_Z2pythia_PF_ClosureMC/OutputResolutions2012.root", "READ");
+   //TFile* Asymmetry_file = new TFile("/afs/naf.desy.de/user/k/kriheine/scratch/Kalibri/L2andJERScripts/2013_04_09_plots_v1_" + AsymmWidth + "_ResidualCorr_Z2pythia_PF_ClosureMC/OutputResolutions2012.root", "READ");
 
-   TFile* GenAsymmetry_file = new TFile("2013_04_09_plots_v1_StandardDeviation_GenAsymmetry_Z2pythia_PF_ClosureMC/OutputResolutions2012.root", "READ");
+   //TFile* GenAsymmetry_file = new TFile("/afs/naf.desy.de/user/k/kriheine/scratch/Kalibri/L2andJERScripts/2013_04_09_plots_v1_" + AsymmWidth + "_GenAsymmetry_Z2pythia_PF_ClosureMC/OutputResolutions2012.root", "READ");
 
    // define histos
    TH1D* SigmaData_eta0;
@@ -297,8 +297,8 @@ void PlotJERWithPLIConsidered()
 
    for( int i = 0; i < corrected_SigmaData.size(); i++) {
       TH1D* ratio = (TH1D*) (SigmaMC_eta0->Clone());
-      //ratio->Divide(corrected_SigmaData.at(i), corrected_SigmaMC.at(i), 1, 1);
-      ratio->Divide(corrected_SigmaMC.at(i), corrected_SigmaData.at(i), 1, 1);
+      ratio->Divide(corrected_SigmaData.at(i), corrected_SigmaMC.at(i), 1, 1);
+      //ratio->Divide(corrected_SigmaMC.at(i), corrected_SigmaData.at(i), 1, 1);
     
       TF1 *fit_const = new TF1("fit_const", "[0]", ratio->GetXaxis()->GetXmin(), ratio->GetXaxis()->GetXmax());
       fit_const->SetParameters(1, 1);
@@ -342,9 +342,9 @@ void PlotJERWithPLIConsidered()
    cout << "Ratio Bin 5: " << RatioVsEta->GetBinContent(5) << " +- " << RatioVsEta->GetBinError(5) << endl;
 
    // write result histo to root-file
-   //TString outfile = "JER_RatioVsEta_AfterPLICorr_" + AsymmWidth + ".root";
+   TString outfile = "JER_RatioVsEta_AfterPLICorr_" + AsymmWidth + ".root";
    //TString outfile = "JER_RatioVsEta_AfterPLICorr_" + AsymmWidth + "_MBXS73500.root";
-   TString outfile = "JER_RatioVsEta_AfterPLICorr_" + AsymmWidth + "_ClosureTest.root";
+   //TString outfile = "JER_RatioVsEta_AfterPLICorr_" + AsymmWidth + "_ClosureTest.root";
 
    if (PLI_scale == 0.75) outfile = "JER_RatioVsEta_PLICorrDOWN_" + AsymmWidth + ".root";
    if (PLI_scale == 1.25) outfile = "JER_RatioVsEta_PLICorrUP_" + AsymmWidth + ".root";

@@ -21,6 +21,8 @@ void PlotJERClosure()
    // truncated RMS
    TFile* file_TruncatedRMS = new TFile("/afs/naf.desy.de/user/k/kriheine/scratch/Kalibri/L2andJERScripts/JER_RatioVsEta_AfterPLICorr_TruncatedRMS_ClosureTest.root", "READ");
 
+   //TFile* file_TruncatedRMS = new TFile("JER_RatioVsEta_AfterPLICorr_TruncatedRMS_TruncatedGenAsymm_ClosureTest.root", "READ");
+
    // GaussFit
    TFile* file_GaussFit = new TFile("/afs/naf.desy.de/user/k/kriheine/scratch/Kalibri/L2andJERScripts/JER_RatioVsEta_AfterPLICorr_GaussFitWidth_ClosureTest.root", "READ");
 
@@ -56,7 +58,7 @@ void PlotJERClosure()
 
    TCanvas *c = new TCanvas();
    RatioNominal->GetXaxis()->SetTitle("|#eta|");
-   RatioNominal->GetYaxis()->SetRangeUser(0.9, 1.35);
+   RatioNominal->GetYaxis()->SetRangeUser(1.0, 1.35);
    RatioNominal->GetYaxis()->SetTitle("MC_{smeared} /MC ratio (const fit)");
    RatioNominal->Draw();
    RatioTruncatedRMS->SetMarkerColor(kRed);
@@ -66,16 +68,16 @@ void PlotJERClosure()
    RatioStandardDeviation->SetMarkerColor(kGreen);
    RatioStandardDeviation->Draw("same");
 
-   TLegend *leg2 = new TLegend(0.54, 0.17, 0.74, 0.37);
+   TLegend *leg2 = new TLegend(0.19, 0.67, 0.39, 0.91);
    leg2->SetBorderSize(0);
    // leg2->SetBorderMode(0);
    leg2->SetFillColor(0);
    leg2->SetFillStyle(0);
    leg2->SetTextFont(42);
-   leg2->SetTextSize(0.035);
+   leg2->SetTextSize(0.04);
 
    leg2->AddEntry(RatioNominal,"Input values", "pfl");
-   leg2->AddEntry(RatioTruncatedRMS,"Truncated RMS", "pfl");
+   leg2->AddEntry(RatioTruncatedRMS,"Truncated RMS 98.5%", "pfl");
    leg2->AddEntry(RatioGaussFit,"Gauss Fit", "pfl");
    leg2->AddEntry(RatioStandardDeviation,"Standard Deviation", "pfl");
 
@@ -83,6 +85,7 @@ void PlotJERClosure()
 
    cmsPrel();
 
-
+   c->Print("JERPlots/MCClosureJER.png");
+   c->Print("JERPlots/MCClosureJER.eps");
 
 }

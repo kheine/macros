@@ -21,13 +21,13 @@ void CalcSysUncJER()
    // ------------------------------------------------------------------ //
    // get files with nominal value and variations
    // nominal values
-   TFile* file_nominal = new TFile("/afs/naf.desy.de/user/k/kriheine/scratch/Kalibri/L2andJERScripts/JER_RatioVsEta_AfterPLICorr_TruncatedRMS.root", "READ");
+   TFile* file_nominal = new TFile("/afs/naf.desy.de/user/k/kriheine/macros/JER_RatioVsEta_AfterPLICorr_TruncatedRMS.root", "READ");
 
    // pli down
-   TFile* file_pliDOWN = new TFile("/afs/naf.desy.de/user/k/kriheine/scratch/Kalibri/L2andJERScripts/JER_RatioVsEta_PLICorrDOWN_TruncatedRMS.root", "READ");
+   TFile* file_pliDOWN = new TFile("/afs/naf.desy.de/user/k/kriheine/macros/JER_RatioVsEta_PLICorrDOWN_TruncatedRMS.root", "READ");
 
    // pli up
-   TFile* file_pliUP = new TFile("/afs/naf.desy.de/user/k/kriheine/scratch/Kalibri/L2andJERScripts/JER_RatioVsEta_PLICorrUP_TruncatedRMS.root", "READ");
+   TFile* file_pliUP = new TFile("/afs/naf.desy.de/user/k/kriheine/macros/JER_RatioVsEta_PLICorrUP_TruncatedRMS.root", "READ");
 
    // extrapol up + down
    TFile* file_extrapol = new TFile("/afs/naf.desy.de/user/k/kriheine/scratch/Kalibri/L2andJERScripts/JER_RatioVsEta_WithExtrapolUnc_TruncatedRMS.root", "READ");
@@ -62,13 +62,38 @@ void CalcSysUncJER()
    file_pu->cd();
    gDirectory->GetObject("RatioVsEta", RatioPUUp);
 
+   // ------------------------------------------------------------------ //
    // calc symmetric PU errors
    TH1D *RatioPUDown = new TH1D(*RatioPUUp);
    RatioPUDown->Reset();
-   RatioPUDown->Add(RatioPUUp);
-   RatioPUDown->Add(RatioNominal, -1);
-   RatioPUDown->Scale(-1);
-   RatioPUDown->Add(RatioNominal);
+
+   for (int i = 1; i < RatioPUUp->GetNbinsX()+1; i++) {
+      double bin_content_pu = RatioPUUp->GetBinContent(i);
+      double bin_content_nominal = RatioNominal->GetBinContent(i);
+
+      double diff = bin_content_pu - bin_content_nominal;
+
+      if( diff > 0 ) {
+         RatioPUUp->SetBinContent(i, bin_content_pu);
+         RatioPUDown->SetBinContent(i, bin_content_nominal - diff);
+      }
+      else if ( diff < 0 ) {
+         RatioPUDown->SetBinContent(i, bin_content_pu);
+         RatioPUUp->SetBinContent(i, bin_content_nominal - diff);
+      }
+   }
+
+   // calc symmetric Extrapol errors
+   for (int i = 1; i < RatioExtrapolUp->GetNbinsX()+1; i++) {
+      double extrapol_up = RatioExtrapolUp->GetBinContent(i);
+      double extrapol_down = RatioExtrapolDown->GetBinContent(i);
+      double bin_content_nominal = RatioNominal->GetBinContent(i);
+
+      double diff = (extrapol_up - extrapol_down)/2;
+      RatioExtrapolUp->SetBinContent(i, bin_content_nominal + diff);
+      RatioExtrapolDown->SetBinContent(i, bin_content_nominal - diff);
+   }
+
 
    // ------------------------------------------------------------------ //
    // remove hist errors for unc. variations
@@ -86,46 +111,66 @@ void CalcSysUncJER()
    double eta0_sysUncDown = TMath::Sqrt(pow(RatioNominal->GetBinContent(1) - 
                                             RatioPLIDown->GetBinContent(1),2) + 
                                         pow(RatioNominal->GetBinContent(1) - 
-                                            RatioExtrapolDown->GetBinContent(1),2));
+                                            RatioExtrapolDown->GetBinContent(1),2) +
+                                        pow(RatioNominal->GetBinContent(1) - 
+                                            RatioPUDown->GetBinContent(1),2));
    double eta1_sysUncDown = TMath::Sqrt(pow(RatioNominal->GetBinContent(2) - 
                                             RatioPLIDown->GetBinContent(2),2) + 
                                         pow(RatioNominal->GetBinContent(2) - 
-                                            RatioExtrapolDown->GetBinContent(2),2));
+                                            RatioExtrapolDown->GetBinContent(2),2) +
+                                        pow(RatioNominal->GetBinContent(2) - 
+                                            RatioPUDown->GetBinContent(2),2));
    double eta2_sysUncDown = TMath::Sqrt(pow(RatioNominal->GetBinContent(3) - 
                                             RatioPLIDown->GetBinContent(3),2) + 
                                         pow(RatioNominal->GetBinContent(3) - 
-                                            RatioExtrapolDown->GetBinContent(3),2));
+                                            RatioExtrapolDown->GetBinContent(3),2) +
+                                        pow(RatioNominal->GetBinContent(3) - 
+                                            RatioPUDown->GetBinContent(3),2));
    double eta3_sysUncDown = TMath::Sqrt(pow(RatioNominal->GetBinContent(4) - 
                                             RatioPLIDown->GetBinContent(4),2) + 
                                         pow(RatioNominal->GetBinContent(4) - 
-                                            RatioExtrapolDown->GetBinContent(4),2));
+                                            RatioExtrapolDown->GetBinContent(4),2) +
+                                        pow(RatioNominal->GetBinContent(4) - 
+                                            RatioPUDown->GetBinContent(4),2));
    double eta4_sysUncDown = TMath::Sqrt(pow(RatioNominal->GetBinContent(5) - 
                                             RatioPLIDown->GetBinContent(5),2) + 
                                         pow(RatioNominal->GetBinContent(5) - 
-                                            RatioExtrapolDown->GetBinContent(5),2));
+                                            RatioExtrapolDown->GetBinContent(5),2) +
+                                        pow(RatioNominal->GetBinContent(5) - 
+                                            RatioPUDown->GetBinContent(5),2));
 
    // ------------------------------------------------------------------ //
    // calc upper bounds
    double eta0_sysUncUp = TMath::Sqrt(pow(RatioPLIUp->GetBinContent(1) - 
                                           RatioNominal->GetBinContent(1),2) + 
                                       pow(RatioExtrapolUp->GetBinContent(1) - 
-                                          RatioNominal->GetBinContent(1),2));
+                                          RatioNominal->GetBinContent(1),2) +
+                                      pow(RatioNominal->GetBinContent(1) - 
+                                          RatioPUUp->GetBinContent(1),2));
    double eta1_sysUncUp = TMath::Sqrt(pow(RatioPLIUp->GetBinContent(2) - 
                                           RatioNominal->GetBinContent(2),2) + 
                                       pow(RatioExtrapolUp->GetBinContent(2) - 
-                                          RatioNominal->GetBinContent(2),2));                                
+                                          RatioNominal->GetBinContent(2),2) +
+                                      pow(RatioNominal->GetBinContent(2) - 
+                                          RatioPUUp->GetBinContent(2),2));                                
    double eta2_sysUncUp = TMath::Sqrt(pow(RatioPLIUp->GetBinContent(3) - 
                                           RatioNominal->GetBinContent(3),2) + 
                                       pow(RatioExtrapolUp->GetBinContent(3) - 
-                                          RatioNominal->GetBinContent(3),2));
+                                          RatioNominal->GetBinContent(3),2) +
+                                      pow(RatioNominal->GetBinContent(3) - 
+                                          RatioPUUp->GetBinContent(3),2));
    double eta3_sysUncUp = TMath::Sqrt(pow(RatioPLIUp->GetBinContent(4) - 
                                           RatioNominal->GetBinContent(4),2) + 
                                       pow(RatioExtrapolUp->GetBinContent(4) - 
-                                          RatioNominal->GetBinContent(4),2));
+                                          RatioNominal->GetBinContent(4),2) +
+                                      pow(RatioNominal->GetBinContent(4) - 
+                                          RatioPUUp->GetBinContent(4),2));
    double eta4_sysUncUp = TMath::Sqrt(pow(RatioPLIUp->GetBinContent(5) - 
                                           RatioNominal->GetBinContent(5),2) + 
                                       pow(RatioExtrapolUp->GetBinContent(5) - 
-                                          RatioNominal->GetBinContent(5),2));
+                                          RatioNominal->GetBinContent(5),2) +
+                                      pow(RatioNominal->GetBinContent(5) - 
+                                          RatioPUUp->GetBinContent(5),2));
 
    // ------------------------------------------------------------------ //
    // show values on screen with sys. uncertainty
@@ -213,12 +258,12 @@ void CalcSysUncJER()
    leg->AddEntry(RatioNominal,"Nominal JER + stat. unc.", "pfl");
    leg->AddEntry(RatioPLIDown,"PLI", "P");
    leg->AddEntry(RatioExtrapolDown,"Extrapolation", "P");
-   leg->AddEntry(RatioPUUp, "PU weighing", "P");
+   leg->AddEntry(RatioPUUp, "PU weighting", "P");
   
    leg->Draw("same");
 
-   c->Print("JER_2012_uncertainties.eps");
-   c->Print("JER_2012_uncertainties.png");
+   c->Print("JERPlots/JER_2012_uncertainties.eps");
+   c->Print("JERPlots/JER_2012_uncertainties.png");
 
 
    // ------------------------------------------------------------------ //
@@ -263,8 +308,8 @@ void CalcSysUncJER()
   
    leg2->Draw("same");
 
-   c2->Print("JER_2012.eps");
-   c2->Print("JER_2012.png");
+   c2->Print("JERPlots/JER_2012.eps");
+   c2->Print("JERPlots/JER_2012.png");
 
    // ------------------------------------------------------------------ //
    // plot nominal values with total unc. + 2011 comparison
@@ -282,7 +327,7 @@ void CalcSysUncJER()
    Res_2011->SetPointError(2, 0., 0., 0.065, 0.064);
    Res_2011->SetPointError(3, 0., 0., 0.094, 0.092);
    Res_2011->SetPointError(4, 0., 0., 0.200, 0.199);
-
+ 
    TCanvas *c3 = new TCanvas();
    dummy->GetXaxis()->SetTitle("|#eta|");
    dummy->GetYaxis()->SetTitle("Data/MC ratio (const fit)");
@@ -344,8 +389,86 @@ void CalcSysUncJER()
   
    leg2->Draw("same");
 
-   c3->Print("JER_2012_comp2011.eps");
-   c3->Print("JER_2012_comp2011.png");
+   c3->Print("JERPlots/JER_2012_comp2011.eps");
+   c3->Print("JERPlots/JER_2012_comp2011.png");
+
+
+   // ------------------------------------------------------------------ //
+   // plot nominal values with total unc. + photon comparison
+   double photon_bins[5] = {0, 0.5, 1.1, 1.7, 2.3};
+   TH1D *Res_2012Photon_hist = new TH1D("PhotonJER", "", 4, photon_bins);
+   Res_2012Photon_hist->Reset();
+   Res_2012Photon_hist->SetBinContent(1, 1.074);
+   Res_2012Photon_hist->SetBinContent(2, 1.077);
+   Res_2012Photon_hist->SetBinContent(3, 1.111);
+   Res_2012Photon_hist->SetBinContent(4, 1.218);
+
+   TGraphAsymmErrors *Res_2012Photon = new TGraphAsymmErrors(Res_2012Photon_hist);
+   Res_2012Photon->SetPointError(0, 0., 0., TMath::Sqrt(pow(0.012,2)+pow(0.040,2)), 
+                                 TMath::Sqrt(pow(0.012,2)+pow(0.037,2)));
+   Res_2012Photon->SetPointError(1, 0., 0., TMath::Sqrt(pow(0.012,2)+pow(0.046,2)), 
+                                 TMath::Sqrt(pow(0.012,2)+pow(0.043,2)));
+   Res_2012Photon->SetPointError(2, 0., 0., TMath::Sqrt(pow(0.015,2)+pow(0.054,2)), 
+                                 TMath::Sqrt(pow(0.015,2)+pow(0.048,2)));
+   Res_2012Photon->SetPointError(3, 0., 0.,TMath::Sqrt(pow(0.034,2)+pow(0.130,2)), 
+                                 TMath::Sqrt(pow(0.034,2)+pow(0.132,2)) );
+
+   Res_2012->SetPointError(0, 0., 0., eta0_TotalUncDown, eta0_TotalUncUp);
+   Res_2012->SetPointError(1, 0., 0., eta1_TotalUncDown, eta1_TotalUncUp);
+   Res_2012->SetPointError(2, 0., 0., eta2_TotalUncDown, eta2_TotalUncUp);
+   Res_2012->SetPointError(3, 0., 0., eta3_TotalUncDown, eta3_TotalUncUp);
+   Res_2012->SetPointError(4, 0., 0., eta4_TotalUncDown, eta4_TotalUncUp);
+
+   TCanvas *c4 = new TCanvas();
+   dummy->GetXaxis()->SetTitle("|#eta|");
+   dummy->GetYaxis()->SetTitle("Data/MC ratio (const fit)");
+   dummy->GetXaxis()->SetRangeUser(0., 5.);
+   dummy->GetYaxis()->SetRangeUser(0.8, 1.5);
+   dummy->Draw();
+
+   Res_2012->SetMarkerStyle(20);
+   Res_2012->SetMarkerSize(1.4);
+   // Res_2012->SetFillColor(kYellow-3);
+   Res_2012->SetFillColor(kGray);
+   Res_2012->SetFillStyle(3001);
+   //Res_2012->SetLineColor(kYellow-3);
+   Res_2012->SetLineColor(kGray);
+   Res_2012->DrawClone("e3Psame");
+
+   Res_2012Photon->SetMarkerStyle(21);
+   Res_2012Photon->SetMarkerSize(1.3);
+   Res_2012Photon->SetFillColor(kOrange+8);
+   Res_2012Photon->SetFillStyle(3003);
+   Res_2012Photon->DrawClone("e3Psame");
+
+   Res_2012->SetPointError(0, 0., 0., 0., 0.);
+   Res_2012->SetPointError(1, 0., 0., 0., 0.);
+   Res_2012->SetPointError(2, 0., 0., 0., 0.);
+   Res_2012->SetPointError(3, 0., 0., 0., 0.);
+   Res_2012->SetPointError(4, 0., 0., 0., 0.);
+
+   Res_2012->GetXaxis()->SetRangeUser(0., 5.);
+   Res_2012->Draw("psame");
+
+   TLegend *leg3 = new TLegend(0.17, 0.17, 0.54, 0.35);
+   leg3->SetBorderSize(0);
+   // leg3->SetBorderMode(0);
+   leg3->SetFillColor(0);
+   leg3->SetFillStyle(0);
+   leg3->SetTextFont(42);
+   leg3->SetTextSize(0.035);
+
+   leg3->AddEntry(Res_2012," JER 2012 DiJets, PF Jets (total error)", "pfl");
+   leg3->AddEntry(Res_2012Photon," JER 2012 Photon + Jet, PFchs Jets (total error)", "pfl");
+
+   leg3->Draw("same");
+
+   cmsPrel();
+
+   c4->Print("JERPlots/JER_2012_compPhoton.eps");
+   c4->Print("JERPlots/JER_2012_compPhoton.png");
+
+
 
 
 }

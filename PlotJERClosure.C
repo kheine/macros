@@ -19,26 +19,26 @@ void PlotJERClosure()
    setTDRStyle();
 
    // truncated RMS
-   TFile* file_TruncatedRMS = new TFile("/afs/naf.desy.de/user/k/kriheine/scratch/Kalibri/L2andJERScripts/JER_RatioVsEta_AfterPLICorr_TruncatedRMS_ClosureTest.root", "READ");
+   TFile* file_TruncatedRMS = new TFile("/afs/naf.desy.de/user/k/kriheine/macros/JER_RatioVsEta_AfterPLICorr_TruncatedRMS_InclusiveAlpha_ReducedAlphaRangeMoreFitPoints_WithCorrelation_ComparedToGaussFit_RatioClosure.root", "READ");
 
    //TFile* file_TruncatedRMS = new TFile("JER_RatioVsEta_AfterPLICorr_TruncatedRMS_TruncatedGenAsymm_ClosureTest.root", "READ");
 
    // GaussFit
-   TFile* file_GaussFit = new TFile("/afs/naf.desy.de/user/k/kriheine/scratch/Kalibri/L2andJERScripts/JER_RatioVsEta_AfterPLICorr_GaussFitWidth_ClosureTest.root", "READ");
+   // TFile* file_GaussFit = new TFile("/afs/naf.desy.de/user/k/kriheine/scratch/Kalibri/L2andJERScripts/JER_RatioVsEta_AfterPLICorr_GaussFitWidth_ClosureTest.root", "READ");
 
    // StandardDeviation
-   TFile* file_StandardDeviation = new TFile("/afs/naf.desy.de/user/k/kriheine/scratch/Kalibri/L2andJERScripts/JER_RatioVsEta_AfterPLICorr_StandardDeviation_ClosureTest.root", "READ");
+   TFile* file_StandardDeviation = new TFile("/afs/naf.desy.de/user/k/kriheine/macros/JER_RatioVsEta_AfterPLICorr_StandardDeviation_InclusiveAlpha_ReducedAlphaRangeMoreFitPoints_WithCorrelation_ComparedToGaussFit_RatioClosure.root", "READ");
 
    TH1D *RatioTruncatedRMS = new TH1D();
-   TH1D *RatioGaussFit = new TH1D();
+   //  TH1D *RatioGaussFit = new TH1D();
    TH1D *RatioStandardDeviation = new TH1D();
 
    // get histos from files
    file_TruncatedRMS->cd();
    gDirectory->GetObject("RatioVsEta", RatioTruncatedRMS);
 
-   file_GaussFit->cd();
-   gDirectory->GetObject("RatioVsEta", RatioGaussFit);
+   // file_GaussFit->cd();
+   // gDirectory->GetObject("RatioVsEta", RatioGaussFit);
 
    file_StandardDeviation->cd();
    gDirectory->GetObject("RatioVsEta", RatioStandardDeviation);
@@ -63,8 +63,8 @@ void PlotJERClosure()
    RatioNominal->Draw();
    RatioTruncatedRMS->SetMarkerColor(kRed);
    RatioTruncatedRMS->Draw("same");
-   RatioGaussFit->SetMarkerColor(kBlue);
-   RatioGaussFit->Draw("same");
+   //RatioGaussFit->SetMarkerColor(kBlue);
+   //RatioGaussFit->Draw("same");
    RatioStandardDeviation->SetMarkerColor(kGreen);
    RatioStandardDeviation->Draw("same");
 
@@ -78,14 +78,14 @@ void PlotJERClosure()
 
    leg2->AddEntry(RatioNominal,"Input values", "pfl");
    leg2->AddEntry(RatioTruncatedRMS,"Truncated RMS 98.5%", "pfl");
-   leg2->AddEntry(RatioGaussFit,"Gauss Fit", "pfl");
+   // leg2->AddEntry(RatioGaussFit,"Gauss Fit", "pfl");
    leg2->AddEntry(RatioStandardDeviation,"Standard Deviation", "pfl");
 
    leg2->Draw("same");
 
-   cmsPrel();
+   //cmsPrel(-1, false , 8);
 
-   c->Print("JERPlots/MCClosureJER.png");
-   c->Print("JERPlots/MCClosureJER.eps");
+   c->Print("JERPlots/RatioClosureJER_InclusiveAlpha_ReducedAlphaRangeMoreFitPoints_WithCorrelation.png");
+   c->Print("JERPlots/RatioClosureJER_InclusiveAlpha_ReducedAlphaRangeMoreFitPoints_WithCorrelation.eps");
 
 }
